@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic-Tac-Toe Game</title>
+</head>
+<style>
+
+h1
+{
+ color: whitesmoke;
+ font-size: 60px;
+  text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+}
+:root {
+  --clr-neon:#FF407D;
+  --clr-bg:#FF407D;
+
+}
+    body {
+   margin: 0;
+  padding: 0;
+  background-color: black;
+  text-align: center;
+}
+
+.box {
+  height: 18vmin;
+  width: 18vmin;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+  font-size: 8vmin;
+  font-color:;
+  color: whitesmoke;
+  background-color:black;
+  text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+
+}
+
+#box99{
+  padding:auto;
+
+   height:100%;
+   background-color:black;
+}
+#box99 button{
+  border-radius: 1rem;
+  border: none;
+  font-size: 30px;
+  width: 300px;
+  height: 100px;
+  color: whitesmoke;
+ 
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+  
+}
+</style>
+<body>
+    <div id="head">
+        <h1 style="margin:0px; ">Tic Tac Toe</h1>
+    </div>
+       <div id="box99">
+         <button id="button123"  style=" ">
+  <img src="https://media.tenor.com/vvxf3l6OngwAAAAi/vtuber-vtubers.gif" style="background-color:unset; width:200px; height: 200px;">
+          <img src="play.jpg" style="width:240px; height: 200px; " id="buttonplay">       </button>
+       </div>
+
+       <div class="msg-container hide">
+        <p id="msg">Winner</p>
+        <button id="new-btn">New Game</button>
+      </div>
+
+      <main id="main1">
+        <div class="container">
+          <div id="outputDiv" style=" color:white ; align-self:center; justify-self: center;  " ></div><br><center>
+          <div class="game">
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+            <button class="box"></button>
+          </div>
+        </div>
+        <button id="reset-btn">Reset Game</button>
+      </main>
+</body>
+<script>let boxes = document.querySelectorAll(".box");
+  let resetBtn = document.querySelector("#reset-btn");
+  let newGameBtn = document.querySelector("#new-btn");
+  let msgContainer = document.querySelector(".msg-container");
+  let msg = document.querySelector("#msg");
+  let Btn = document.querySelector("#buttonplay");
+  let page =document.querySelector("#box99");
+  let main =  document.querySelector("#main1");
+  document.getElementById('outputDiv').innerText = `YOUR TURN : O`;
+  main.classList.add("hide");
+
+  Btn.addEventListener("click",() => {
+    page.classList.add("hide");
+    main.classList.remove("hide");
+        });
+  
+  let turnO = true; //playerX, playerO
+  let count = 0; //To Track Draw
+  
+  const winPatterns = [
+    [0, 1, 2],
+    [0, 3, 6],
+    [0, 4, 8],
+    [1, 4, 7],
+    [2, 5, 8],
+    [2, 4, 6],
+    [3, 4, 5],
+    [6, 7, 8],
+  ];
+  
+  const resetGame = () => {
+    turnO = true;
+    count = 0;
+    enableBoxes();
+    msgContainer.classList.add("hide");
+  };
+  
+  boxes.forEach((box) => {
+    box.addEventListener("click", () => {
+      if (turnO) {
+        //playerO
+      document.getElementById('outputDiv').innerText = `YOUR TURN: X`;
+        box.innerText = "O";
+        turnO = false;
+      } else {
+        //playerX
+      document.getElementById('outputDiv').innerText = `YOUR TURN : O`;
+        box.innerText = "X";
+        turnO = true;
+      }
+      box.disabled = true;
+      count++;
+  
+      let isWinner = checkWinner();
+  
+      if (count === 9 && !isWinner) {
+        gameDraw();
+      }
+    });
+  });
+  
+  const gameDraw = () => {
+    msg.innerText = `Game was a Draw.`;
+    msgContainer.classList.remove("hide");
+    main.classList.add("hide");
+    disableBoxes();
+  };
+  
+  const disableBoxes = () => {
+    for (let box of boxes) {
+      box.disabled = true;
+    }
+  };
+  
+  const enableBoxes = () => {
+    for (let box of boxes) {
+      box.disabled = false;
+      box.innerText = "";
+    }
+  };
+  
+  const showWinner = (winner) => {
+    msg.innerText = `Congratulations, Winner is ${winner}`;
+    msgContainer.classList.remove("hide");
+    main.classList.add("hide");
+    disableBoxes();
+    document.getElementById('outputDiv').innerText = `YOUR TURN : O`;
+  };
+  
+  const checkWinner = () => {
+    for (let pattern of winPatterns) {
+      let pos1Val = boxes[pattern[0]].innerText;
+      let pos2Val = boxes[pattern[1]].innerText;
+      let pos3Val = boxes[pattern[2]].innerText;
+  
+      if (pos1Val != "" && pos2Val != "" && pos3Val != "") {
+        if (pos1Val === pos2Val && pos2Val === pos3Val) {
+          showWinner(pos1Val);
+          return true;
+        }
+      }
+    }
+  };
+  
+  newGameBtn.addEventListener("click",() => {
+    turnO = true;
+    count = 0;
+    enableBoxes();
+    changeColor();
+    msgContainer.classList.add("hide");
+    main.classList.remove("hide");
+  });
+  resetBtn.addEventListener("click", resetGame);
+ 
+  function changeColor() {
+            const colors = ["#E4080A", "#5DE2E7", "#1069EF", "#F409E0", "#6510A7", "#E67E22", "#E91E63"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.documentElement.style.setProperty('--clr-neon', randomColor);
+        }
+  
+  </script>
+<style>* {
+ 
+}
+
+body {
+   margin: 0;
+  padding: 0;
+  background-color: black;
+  text-align: center;
+}
+
+.container {
+  height: 55vh;
+  display:;
+  justify-content: center;
+  align-items: center;
+}
+
+.game {
+  height: 60vmin;
+  width: 60vmin;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.7vmin;
+}
+
+.box {
+  height: 18vmin;
+  width: 18vmin;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+  font-size: 8vmin;
+  font-color:;
+  color: whitesmoke;
+  background-color:black;
+  text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+
+}
+
+#box99{
+  padding:auto;
+
+   height:100%;
+   background-color:black;
+}
+#box99 button{
+  border-radius: 1rem;
+  border: none;
+  font-size: 30px;
+  width: 300px;
+  height: 100px;
+  color: whitesmoke;
+ 
+  background-color: black;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+#box89{
+ 
+  height:auto;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+   text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+   background-color:black;
+   color: whitesmoke;
+   font-size:;
+   align-self: center;
+}
+
+#box89 table{
+ text-align: justify;
+ display: flex;
+ flex-shrink: 1;
+}
+#box89 h2,h3{
+ color: #FF407D;
+}
+#box89 pre {
+  white-space: pre-wrap; /* Wraps content instead of overflowing */
+  
+}
+
+
+#box89 button{
+  border: none;
+  width:175px;
+   height: 150px;
+   object-fit:cover; 
+background-size: cover ;
+}
+
+
+.input-container{
+ padding:auto;
+   height:100%;
+   background-color:black;
+}
+.input-container  input {
+ font-size:15px;
+  width: 80%;
+  height: 60px;
+  color:whitesmoke;
+  text-align: center;
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+  background-color:unset;
+   border-radius: 1rem;
+   border: none;
+}
+.input-container button{
+   border: none;
+background-color: black;
+height:200px; 
+}
+
+
+
+
+h1
+{
+ color: whitesmoke;
+ font-size: 60px;
+  text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+}
+:root {
+  --clr-neon:#FF407D;
+  --clr-bg:#FF407D;
+
+}
+
+
+
+#reset-btn {
+  padding: 1rem;
+  font-size: 1.25rem;
+  background-color: black;
+  color: whitesmoke;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+   text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+
+}
+
+#new-btn {
+  padding: 1rem;
+  font-size: 1.25rem;
+  background-color: black;
+  color: whitesmoke;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: inset 0 0 0.5em 0 var(--clr-neon), 0 0 0.5em 0 var(--clr-neon);
+   text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+}
+
+#msg {
+  color:var(--clr-neon);
+  font-size: 5vmin;
+   text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+
+}
+
+.msg-container {
+  height: 100vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 4rem;
+}
+/*#i{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  font-size: 32px;
+  border: none;
+  box-shadow:  0 0 0.3em 0 whitesmoke;
+   text-shadow:  0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em currentColor;
+   color: #FF407D;
+   background-color: black;
+  
+}*/
+#head 
+{
+
+height:200px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hide {
+  display: none;
+}</style>
+</html>
